@@ -19,7 +19,7 @@ const SECRET = "supersecretkey123";
 app.use(cors());
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, "../frontend")));
+// app.use(express.static(path.join(__dirname, "../frontend")));
 
 const readUsers = () => {
     if (!fs.existsSync(USERS_FILE)) return [];
@@ -53,8 +53,8 @@ app.post("/login", async (req, res) => {
     return res.json({ message: "Вхід успішний!", token, user: { id: user.id, username: user.username, email: user.email } });
 });
 
-app.get(/.*/, (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/index.html"));
-});
+// app.get(/.*/, (req, res) => {
+//     res.sendFile(path.join(__dirname, "../frontend/index.html"));
+// });
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
