@@ -20,5 +20,10 @@
         "jsonwebtoken": "^9.0.2",
         "mongoose": "^9.0.1",
         "nodemon": "^3.1.11"
+    },
+    "devDependencies": {
+        "@cypress/code-coverage": "^3.14.7",
+        "cypress": "^15.7.1",
+        "react-dom": "^19.2.3"
     }
 }

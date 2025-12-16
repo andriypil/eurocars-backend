@@ -12,23 +12,29 @@ const SECRET = "supersecretkey123";
 app.use(cors());
 app.use(express.json());
 
+const MONGO_URI = "mongodb://pilhovychandrii_db_user:eurocars2025@localhost:27017/eurocars?authSource=admin";
 
-const MONGO_URI = "mongodb+srv://pihovychandrii_db_user:CGz3VyyqxFFQGzQy@cluster0.sgdbdhn.mongodb.net/eurocars?retryWrites=true&w=majority";
 
-
-mongoose.connect(MONGO_URI)
+mongoose
+    .connect(MONGO_URI)
     .then(() => console.log("MongoDB connected!"))
-    .catch(err => console.log("MongoDB connection error:", err));
-
-
+    .catch((err) => console.log("MongoDB connection error:", err));
 
 app.post("/register", async (req, res) => {
+    console.log("REGISTER BODY:", req.body);
+
     try {
         const { username, email, password } = req.body;
 
+        if (!username || !email || !password) {
+            return res.status(400).json({ message: "Заповніть усі поля" });
+        }
+
         const existing = await User.findOne({ email });
         if (existing) {
-            return res.status(400).json({ message: "Користувач з таким email вже існує" });
+            return res
+                .status(400)
+                .json({ message: "Користувач з таким email вже існує" });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -39,16 +45,26 @@ app.post("/register", async (req, res) => {
             password: hashedPassword,
         });
 
-        res.json({ message: "Користувач успішно зареєстрований!", user: newUser });
+        res.json({
+            message: "Користувач успішно зареєстрований!",
+            user: newUser,
+        });
     } catch (err) {
+        console.log("REGISTER ERROR:", err);
         res.status(500).json({ message: "Помилка сервера" });
     }
 });
 
 
 app.post("/login", async (req, res) => {
+    console.log("LOGIN BODY:", req.body);
+
     try {
         const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ message: "Заповніть усі поля" });
+        }
 
         const user = await User.findOne({ email });
         if (!user) {
@@ -68,10 +84,11 @@ app.post("/login", async (req, res) => {
             user,
         });
     } catch (err) {
+        console.log("LOGIN ERROR:", err);
         res.status(500).json({ message: "Помилка сервера" });
     }
 });
 
-
-
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () =>
+    console.log(`Server running on http://localhost:${PORT}`)
+);
